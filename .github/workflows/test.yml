@@ -1,0 +1,29 @@
+name: test
+
+env:
+  GOPATH: /home/runner/work/christwosix/go
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.23.0']
+    steps:
+      - name: Configure Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Vet source
+        run: go vet ./...
+      - name: Test source
+        run: go test ./... -covermode count -v
